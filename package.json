@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "protobufjs": "^7.5.2",
+    "protobufjs-cli": "^1.1.3"
+  },
+  "scripts": {
+    "test": "npm i protobufjs@7.4.0 && npm run build && mv protos.js protos.old.js && mv protos.d.ts protos.old.d.ts && npm i protobufjs@^7.5.0 && npm run build && diff -u protos.old.d.ts protos.d.ts",
+    "build": "npm run build:js && npm run build:ts",
+    "build:js": "pbjs --force-message --null-semantics -t static-module --force-number --dependency protobufjs/minimal.js --es6 -o ./protos.js *.proto && sed -i -e 's/\\$util.Long/false/' -e 's/options.longs === String/false/' protos.js",
+    "build:ts": "pbts -o protos.d.ts ./protos.js && sed -i -e 's/import Long = require(\"long\");//' protos.d.ts"
+  }
+}
